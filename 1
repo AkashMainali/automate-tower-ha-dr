@@ -1,0 +1,37 @@
+---
+
+# NOTE assuming bundled instalaler
+
+tower_version: 3.5.6-1
+
+# required for roles included from the installer
+bundle_install: true
+
+tower_bundle_version: el8
+tower_download_url: 'https://releases.ansible.com/ansible-tower/setup-bundle/'
+#default download/extract location for installer
+tower_installer_dir: tower-installer
+
+# expected media file based on tower version. Assumes bundle with el extension (e.g .el7)
+tower_artifact: "ansible-tower-setup-bundle-{{ tower_version }}.{{ tower_bundle_version }}.tar.gz"
+
+#get the current installer directory
+tower_installer_basedir_cmd: "tar --exclude='*/*' -tf {{ tower_installer_dir }}/{{ tower_artifact }}"
+
+#need to trim the trailing slash
+tower_installer_current: '{{ tower_installer_dir }}/{{ (lookup("pipe", tower_installer_basedir_cmd))[:-1] }}'
+
+# exclude tower_inventory_ha or tower_inventory_dr if only using one configuration
+tower_inventory_pm: inventory_main/inventory_pm
+tower_inventory_dr: inventory_main/inventory_dr
+tower_inventory_ha: inventory_main/inventory_ha
+
+# indicate whether the database is managed by the installer and toolkit or
+# provided as a service.  If set to true, all replication configuration is skipped
+tower_db_external: false
+
+# indicate vault password file.  presence of this var indicates vault is used
+#tower_vault_file: .vault-pass
+
+#override RAM reqts
+tower_ram_override: false
